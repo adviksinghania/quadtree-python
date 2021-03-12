@@ -12,6 +12,10 @@ class Point:
         self.x = x
         self.y = y
 
+    # To make our object work with print function
+    def __repr__(self):
+        return "(x: {0}, y: {1})".format(self.x, self.y)
+
 
 class Rectangle:
     """Creating a Rectangle."""
@@ -22,11 +26,25 @@ class Rectangle:
         self.y = y
         self.w = w  # width
         self.h = h  # height
+        self.points = []
+
+    # To print boundary of this function
+    def __repr__(self):
+        return "({0}, {1}, {2}, {3})".format(self.x, self.y, self.x+self.w, self.y+self.h)
 
     def contains(self, point):
         check_x = self.x - self.w < point.x < self.x + self.w
         check_y = self.y - self.h < point.y < self.y + self.h
         return check_x and check_y
+
+    def insert(self, point):
+        if not self.contains(point):
+            return False
+
+        self.points.append(point)
+
+        return True
+
 
 
 class Quadtree:
@@ -36,8 +54,12 @@ class Quadtree:
         """Properties for a quadtree."""
         self.boundary = boundary  # object of class Rectangle
         self.capacity = capacity  # 4
-        self.points = []  # list to store the contained points
         self.divided = False  # to check if the tree is divided or not
+
+        self.northeast = None
+        self.southeast = None
+        self.northwest = None
+        self.southwest = None
 
     def subdivide(self):
         """Dividing the quadtree into four sections."""
@@ -54,15 +76,28 @@ class Quadtree:
 
         north_west = Rectangle(x - w / 2, y + h / 2, w / 2, h / 2)
         self.northwest = Quadtree(north_west, self.capacity)
+
         self.divided = True
 
+
+        for each in self.boundary.points:
+            self.northeast.insert(each)
+            self.southeast.insert(each)
+            self.northwest.insert(each)
+            self.southwest.insert(each)
+
     def insert(self, point):
+
+        # If this major rectangle does not contain the point
+        # no need to check subdivided rectangle
         if not self.boundary.contains(point):
             return
 
-        if len(self.points) < self.capacity:  # TODO: check whether the point is already there or not
-            self.points.append(point)  # add the point to the list if the length is less than capacity
+        if len(self.boundary.points) < self.capacity:  # TODO: check whether the point is already there or not
+            self.boundary.insert(point)  # add the point to the list if the length is less than capacity
         else:
+            # Clear the main rectangle
+
             if not self.divided:
                 self.subdivide()
 
@@ -71,10 +106,22 @@ class Quadtree:
             self.southwest.insert(point)
             self.northwest.insert(point)
 
-            print(self.northeast.points)  # TODO: GUI
-            print(self.southeast.points)
-            print(self.southwest.points)
-            print(self.northwest.points)
+            # self.boundary.points = []
+
+    def printsub(self):
+
+        if self.divided == False and len(self.boundary.points):
+            print(self.boundary)
+            print(self.boundary.points)
+        else:
+            if self.northeast != None:
+                self.northeast.printsub()
+            if self.southeast != None:
+                self.southeast.printsub()
+            if self.northwest != None:
+                self.northwest.printsub()
+            if self.southwest != None:
+                self.southwest.printsub()
 
 
 if __name__ == '__main__':
@@ -84,3 +131,5 @@ if __name__ == '__main__':
         random.seed(i)
         p = Point(random.randint(0, 100), random.randint(0, 100))
         qt.insert(p)
+
+    qt.printsub()
