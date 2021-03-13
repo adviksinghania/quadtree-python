@@ -5,6 +5,9 @@
 import random
 import time
 
+RECTANGLES = []
+POINTS = []
+
 
 class Point:
     """Properties of a point."""
@@ -15,7 +18,7 @@ class Point:
 
     # To make our object work with print function
     def __repr__(self):
-        return f'(x: {self.x}, y: {self.y})'
+        return f'{{"x": {self.x}, "y": {self.y}}}'
 
 
 class Rectangle:
@@ -99,9 +102,12 @@ class Quadtree:
             self.northwest.insert(point)
 
     def printsub(self):
+        global RECTANGLES, POINTS
         if self.divided is False and len(self.boundary.points):
             print(self.boundary)
             print(self.boundary.points)
+            RECTANGLES.append(self.boundary)
+            POINTS.append(self.boundary.points)
         else:
             if self.northeast is not None:
                 self.northeast.printsub()
