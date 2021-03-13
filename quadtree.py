@@ -23,7 +23,7 @@ class Rectangle:
 
     def __init__(self, x, y, w, h):
         """Properties of the Rectangle."""
-        self.x = x  # coordinates of center
+        self.x = x  # coordinates of corner
         self.y = y
         self.w = w  # width
         self.h = h  # height
@@ -34,8 +34,8 @@ class Rectangle:
         return f'({self.x}, {self.y}, {self.w}, {self.h})'
 
     def contains(self, point):
-        check_x = self.x - self.w < point.x <= self.x + self.w
-        check_y = self.y - self.h < point.y <= self.y + self.h
+        check_x = self.x < point.x <= self.x + self.w
+        check_y = self.y < point.y <= self.y + self.h
         return check_x and check_y
 
     def insert(self, point):
@@ -63,16 +63,16 @@ class Quadtree:
         """Dividing the quadtree into four sections."""
         x, y, w, h = self.boundary.x, self.boundary.y, self.boundary.w, self.boundary.h
 
-        north_east = Rectangle(x + w / 2, y + h / 2, w / 2, h / 2)
+        north_east = Rectangle(x + w / 2, y, w / 2, h / 2)
         self.northeast = Quadtree(north_east, self.capacity)
 
-        south_east = Rectangle(x + w / 2, y - h / 2, w / 2, h / 2)
+        south_east = Rectangle(x + w / 2, y + h / 2, w / 2, h / 2)
         self.southeast = Quadtree(south_east, self.capacity)
 
-        south_west = Rectangle(x - w / 2, y - h / 2, w / 2, h / 2)
+        south_west = Rectangle(x, y + h / 2, w / 2, h / 2)
         self.southwest = Quadtree(south_west, self.capacity)
 
-        north_west = Rectangle(x - w / 2, y + h / 2, w / 2, h / 2)
+        north_west = Rectangle(x, y, w / 2, h / 2)
         self.northwest = Quadtree(north_west, self.capacity)
         self.divided = True
 
@@ -114,11 +114,11 @@ class Quadtree:
 
 
 if __name__ == '__main__':
-    root = Rectangle(200, 200, 200, 200)
+    root = Rectangle(0, 0, 200, 200)
     qt = Quadtree(root, 4)
     random.seed(time.time())
     for i in range(10):
-        p = Point(random.randint(0, 400), random.randint(0, 400))
+        p = Point(random.randint(0, 200), random.randint(0, 200))
         qt.insert(p)
 
     qt.printsub()
