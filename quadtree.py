@@ -87,7 +87,7 @@ class Quadtree:
         if not self.boundary.contains(point):
             return
 
-        if len(self.boundary.points) <= self.capacity:
+        if len(self.boundary.points) < self.capacity:
             self.boundary.insert(point)  # add the point to the list if the length is less than capacity
         else:
             if not self.divided:
