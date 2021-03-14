@@ -13,7 +13,12 @@ Implementing a [quadtree](https://en.wikipedia.org/wiki/Quadtree) algorithm in P
     Navigate inside the folder: ```cd quadtree/```
 
 -   Run ```python3 main.py```
+-   Use left mouse button to click and create points in the window.
 
 #### Example:
 
+**Example for tag:mouse-points code**
+![Example](https://github.com/adviksinghania/quadtree-python/blob/main/example2.gif?raw=true)
+
+**Example for tag:static-points code**
 ![Example](https://github.com/adviksinghania/quadtree-python/blob/main/example.png?raw=true)
